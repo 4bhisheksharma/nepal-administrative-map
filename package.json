@@ -1,0 +1,81 @@
+{
+  "name": "nepal-administrative-map",
+  "version": "0.0.1",
+  "description": "Interactive, bilingual (English/Nepali) map of Nepal's 7 provinces, 77 districts and 753 local levels, with zoom, drill-down, choropleths and search.",
+  "license": "MIT",
+  "author": "Abhishek Sharma",
+  "homepage": "https://github.com/4bhisheksharma/nepal_administrative_map",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/4bhisheksharma/nepal_administrative_map.git"
+  },
+  "bugs": {
+    "url": "https://github.com/4bhisheksharma/nepal_administrative_map/issues"
+  },
+  "keywords": [
+    "map",
+    "nepal",
+    "geography",
+    "i18n",
+    "visualization",
+    "react",
+    "choropleth",
+    "topojson"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js",
+      "require": "./dist/core.cjs"
+    },
+    "./assets/maps/nepal.topo.json": "./assets/maps/nepal.topo.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "assets/maps/nepal.topo.json",
+    "LICENSE",
+    "DATA_LICENSE.md",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "sync-assets": "node scripts/sync-assets.mjs",
+    "generate": "node scripts/generate-gazetteer.mjs",
+    "prebuild": "npm run sync-assets && npm run generate",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "dev:example": "npm run build && npm --prefix example run dev"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": false
+    },
+    "react-dom": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.0"
+  }
+}

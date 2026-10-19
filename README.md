@@ -1,0 +1,127 @@
+# nepal-administrative-map
+
+[![npm](https://img.shields.io/npm/v/nepal-administrative-map.svg)](https://www.npmjs.com/package/nepal-administrative-map)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+An interactive administrative map of Nepal for **React**: **7 provinces,
+77 districts and 753 local levels**, in **English and Nepali (नेपाली)**.
+
+Sister package to the Flutter
+[`nepal_administrative_map`](https://pub.dev/packages/nepal_administrative_map)
+pub package — same data, codes, and feature set.
+
+- **One component to start:** `<NepalMap />` — no API keys, offline, ~422 KB bundled TopoJSON
+- **Bilingual:** names, labels, tooltips, legends and numbers in English or Nepali
+- **Interactive:** zoom, pan, tap to select, hover tooltips, drill-down province → district → local level
+- **Data maps:** choropleth colouring with legend, markers, and place search
+- **Typed regions:** `District.kaski`, `LocalLevel.pokhara`, stable codes for clean joins
+- **Zero runtime dependencies** besides React (peer)
+
+## Install
+
+```sh
+npm install nepal-administrative-map
+```
+
+## Quick start
+
+```tsx
+import { NepalMap, AdminLevel } from 'nepal-administrative-map';
+import topoUrl from 'nepal-administrative-map/assets/maps/nepal.topo.json?url';
+
+export function App() {
+  return (
+    <div style={{ height: 480 }}>
+      <NepalMap
+        mapDataUrl={topoUrl}
+        level={AdminLevel.district.id}
+        onRegionTap={(region) => console.log(region.fullName('en'))}
+      />
+    </div>
+  );
+}
+```
+
+> Pass `mapDataUrl` to the bundled TopoJSON (Vite `?url`, webpack asset modules, or copy the file into your `public/` folder). Framework-agnostic data APIs are also available from `nepal-administrative-map/core`.
+
+## Common setups
+
+```tsx
+// Provinces (default), tap to select
+<NepalMap mapDataUrl={topoUrl} />
+
+// Drill down: province → districts → local levels
+<NepalMap mapDataUrl={topoUrl} drillDown />
+
+// Gandaki's districts, in Nepali
+import { Province } from 'nepal-administrative-map';
+<NepalMap
+  mapDataUrl={topoUrl}
+  level="district"
+  scope={Province.gandaki}
+  language="ne"
+/>
+
+// Choropleth
+import { Choropleth, ColorScale, District, LocalizedName } from 'nepal-administrative-map';
+<NepalMap
+  mapDataUrl={topoUrl}
+  level="district"
+  choropleth={new Choropleth({
+    values: new Map([
+      [District.kathmandu, 1744240],
+      [District.lalitpur, 548401],
+    ]),
+    scale: ColorScale.sequential('#fff8e1', '#e65100'),
+    title: new LocalizedName('Population', 'जनसंख्या'),
+  })}
+/>
+
+// Controller
+import { useNepalMapController, NepalMapBreadcrumb, NepalMapSearchField } from 'nepal-administrative-map';
+
+const controller = useNepalMapController();
+<>
+  <NepalMapBreadcrumb controller={controller} />
+  <NepalMapSearchField controller={controller} />
+  <NepalMap mapDataUrl={topoUrl} controller={controller} drillDown />
+</>
+```
+
+## API overview
+
+| Export | Role |
+|---|---|
+| `NepalMap` | Main React map component |
+| `NepalMapController` / `useNepalMapController` | Select, zoom, drill, language, `toPngBlob` |
+| `NepalMapBreadcrumb` | Nepal › Province › District |
+| `NepalMapSearchField` | Autocomplete search |
+| `NepalMapLegend` | Choropleth legend (also embedded when `showLegend`) |
+| `Choropleth` / `ColorScale` | Data colouring (sequential, diverging, threshold, categorical) |
+| `Province` / `District` / `LocalLevel` / `ProtectedArea` | Typed gazetteer |
+| `Nepal.byCode` / `Nepal.search` / `NepalMapData` | Core data & geometry (also via `/core`) |
+
+## Attribution
+
+Map boundary data is **CC BY 4.0** (OKNP LocalBoundaries). See [DATA_LICENSE.md](DATA_LICENSE.md).
+The map shows attribution by default; keep it visible or credit equivalently in your UI.
+
+## Example
+
+```sh
+cd example
+npm install
+npm run dev
+```
+
+## Development
+
+```sh
+npm install
+npm run generate   # gazetteer from Flutter names.csv
+npm run build      # dist/ for npm publish
+```
+
+## License
+
+MIT (code) · CC BY 4.0 (map data / names / codes)
