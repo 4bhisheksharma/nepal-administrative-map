@@ -44,6 +44,7 @@
   "files": [
     "dist",
     "assets/maps/nepal.topo.json",
+    "assets/screenshots",
     "LICENSE",
     "DATA_LICENSE.md",
     "README.md",

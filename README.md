@@ -12,10 +12,18 @@ pub package — same data, codes, and feature set.
 
 - **One component to start:** `<NepalMap />` — no API keys, offline, ~422 KB bundled TopoJSON
 - **Bilingual:** names, labels, tooltips, legends and numbers in English or Nepali
-- **Interactive:** zoom, pan, tap to select, hover tooltips, drill-down province → district → local level
+- **Interactive:** zoom, pan, tap to select, hover tooltips, and animated drill-down province → district → local level
 - **Data maps:** choropleth colouring with legend, markers, and place search
 - **Typed regions:** `District.kaski`, `LocalLevel.pokhara`, stable codes for clean joins
 - **Zero runtime dependencies** besides React (peer)
+
+| Provinces in Nepali | Dark mode |
+|---|---|
+| ![Provinces coloured by area, in Nepali](assets/screenshots/provinces_nepali.jpg) | ![Province map in dark mode](assets/screenshots/provinces_dark.jpg) |
+| **Overlays and bilingual labels** | **All 77 districts** |
+| ![Protected areas, city markers and bilingual labels](assets/screenshots/overlays_bilingual.jpg) | ![Districts with English and Nepali labels](assets/screenshots/districts_bilingual.jpg) |
+| **Local levels by type** | |
+| ![Local levels coloured by type, with a tooltip](assets/screenshots/local_level_types.jpg) | |
 
 ## Install
 
@@ -50,8 +58,8 @@ export function App() {
 // Provinces (default), tap to select
 <NepalMap mapDataUrl={topoUrl} />
 
-// Drill down: province → districts → local levels
-<NepalMap mapDataUrl={topoUrl} drillDown />
+// Drill down with animated zoom: province → districts → local levels
+<NepalMap mapDataUrl={topoUrl} drillDown animationDuration={400} />
 
 // Gandaki's districts, in Nepali
 import { Province } from 'nepal-administrative-map';

@@ -131,4 +131,20 @@ export class ViewTransform {
       this.offsetY * pixelRatio,
     );
   }
+
+  /** Linear interpolate between two view transforms. */
+  static lerp(a: ViewTransform, b: ViewTransform, t: number): ViewTransform {
+    const u = Math.min(1, Math.max(0, t));
+    return new ViewTransform(
+      a.scale + (b.scale - a.scale) * u,
+      a.offsetX + (b.offsetX - a.offsetX) * u,
+      a.offsetY + (b.offsetY - a.offsetY) * u,
+    );
+  }
+}
+
+/** Cubic ease-in-out, matching Flutter's Curves.easeInOutCubic. */
+export function easeInOutCubic(t: number): number {
+  const u = Math.min(1, Math.max(0, t));
+  return u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2;
 }

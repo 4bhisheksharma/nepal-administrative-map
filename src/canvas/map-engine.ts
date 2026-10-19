@@ -14,6 +14,7 @@ import { GeometryCache } from './geometry-cache.js';
 import {
   MapPlane,
   ViewTransform,
+  easeInOutCubic,
   type Padding,
   type Size,
 } from './map-plane.js';
@@ -89,6 +90,7 @@ export interface MapEngineOptions {
   maxZoom?: number;
   padding?: Padding;
   extraLayers?: MapLayer[];
+  animationDuration?: number;
   onRegionTap?: (region: Region) => void;
   onRegionHover?: (region: Region | undefined) => void;
   onSelectionChanged?: (selected: Set<Region>) => void;
@@ -148,9 +150,19 @@ export class MapEngine {
   maxZoom: number;
   padding: Padding;
   extraLayers: MapLayer[];
+  /** Drill / zoomTo animation length in ms. */
+  animationDuration: number;
   camera: CameraState = { zoom: 1, panX: 0, panY: 0 };
   size: Size = { width: 0, height: 0 };
   private fitView = new ViewTransform(1, 0, 0);
+  private anim: {
+    from: ViewTransform;
+    to: ViewTransform;
+    start: number;
+    duration: number;
+    resolve: () => void;
+    raf: number;
+  } | null = null;
 
   onRegionTap?: (region: Region) => void;
   onRegionHover?: (region: Region | undefined) => void;
@@ -198,6 +210,7 @@ export class MapEngine {
     this.maxZoom = options.maxZoom ?? 40;
     this.padding = options.padding ?? { top: 8, right: 8, bottom: 8, left: 8 };
     this.extraLayers = options.extraLayers ?? [];
+    this.animationDuration = options.animationDuration ?? 400;
     this.onRegionTap = options.onRegionTap;
     this.onRegionHover = options.onRegionHover;
     this.onSelectionChanged = options.onSelectionChanged;
@@ -207,6 +220,11 @@ export class MapEngine {
   }
 
   get view(): ViewTransform {
+    if (this.anim) {
+      const elapsed = performance.now() - this.anim.start;
+      const t = easeInOutCubic(elapsed / this.anim.duration);
+      return ViewTransform.lerp(this.anim.from, this.anim.to, t);
+    }
     const { zoom, panX, panY } = this.camera;
     return new ViewTransform(
       this.fitView.scale * zoom,
@@ -217,6 +235,63 @@ export class MapEngine {
         (this.size.height * (1 - zoom)) / 2 +
         panY,
     );
+  }
+
+  private cancelAnimation(): void {
+    if (!this.anim) return;
+    cancelAnimationFrame(this.anim.raf);
+    const { resolve, to } = this.anim;
+    this.fitView = to;
+    this.camera = { zoom: 1, panX: 0, panY: 0 };
+    this.anim = null;
+    resolve();
+  }
+
+  /**
+   * Animate the view to a fitted view of [content].
+   * Pass [from] to start from a transform captured before scope/level change.
+   */
+  private animateFitTo(
+    content: ReturnType<MapEngine['contentRect']>,
+    duration = this.animationDuration,
+    from: ViewTransform = this.view,
+  ): Promise<void> {
+    this.cancelAnimation();
+    this.camera = { zoom: 1, panX: 0, panY: 0 };
+    this.fitView = ViewTransform.fit(content, this.size, this.padding);
+    const to = this.fitView;
+
+    if (duration <= 0 || typeof requestAnimationFrame === 'undefined') {
+      this.notify();
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      const start = performance.now();
+      const tick = (now: number) => {
+        if (!this.anim) return;
+        const t = (now - start) / duration;
+        if (t >= 1) {
+          this.anim = null;
+          this.fitView = to;
+          this.camera = { zoom: 1, panX: 0, panY: 0 };
+          this.notify();
+          resolve();
+          return;
+        }
+        this.notify();
+        this.anim.raf = requestAnimationFrame(tick);
+      };
+      this.anim = {
+        from,
+        to,
+        start,
+        duration,
+        resolve,
+        raf: requestAnimationFrame(tick),
+      };
+      this.notify();
+    });
   }
 
   resize(width: number, height: number, notify = true): void {
@@ -241,11 +316,13 @@ export class MapEngine {
   }
 
   resetView(): void {
+    this.cancelAnimation();
     this.camera = { zoom: 1, panX: 0, panY: 0 };
     this.refit();
   }
 
   zoomBy(factor: number, centerX?: number, centerY?: number): void {
+    this.cancelAnimation();
     const cx = centerX ?? this.size.width / 2;
     const cy = centerY ?? this.size.height / 2;
     const before = this.view.toPlane(cx, cy);
@@ -270,15 +347,25 @@ export class MapEngine {
     this.zoomBy(1 / 1.4);
   }
 
-  async zoomTo(region: Region, _animate = true): Promise<void> {
-    this.scope = region.level.id === 'localLevel' ? (region as LocalLevel).district : region;
+  async zoomTo(region: Region, animate = true): Promise<void> {
+    const from = this.view;
+    this.scope =
+      region.level.id === 'localLevel'
+        ? (region as LocalLevel).district
+        : region;
     if (region.level.id === 'province') {
       this.level = 'district';
     } else if (region.level.id === 'district') {
       this.level = 'localLevel';
     }
-    this.camera = { zoom: 1, panX: 0, panY: 0 };
-    this.refit();
+    this.onScopeChanged?.(this.scope);
+    if (animate) {
+      await this.animateFitTo(this.contentRect(), this.animationDuration, from);
+    } else {
+      this.cancelAnimation();
+      this.camera = { zoom: 1, panX: 0, panY: 0 };
+      this.refit();
+    }
   }
 
   visibleShapes(): MapShape<Region>[] {
@@ -338,6 +425,7 @@ export class MapEngine {
   }
 
   drillDownTo(region: Region): void {
+    const from = this.view;
     if (region.level.id === 'province') {
       this.scope = region;
       this.level = 'district';
@@ -347,12 +435,12 @@ export class MapEngine {
     } else {
       return;
     }
-    this.camera = { zoom: 1, panX: 0, panY: 0 };
     this.onScopeChanged?.(this.scope);
-    this.refit();
+    void this.animateFitTo(this.contentRect(), this.animationDuration, from);
   }
 
   drillUp(): void {
+    const from = this.view;
     if (this.level === 'localLevel' && this.scope) {
       const district = this.scope as District;
       this.scope = district.province;
@@ -363,12 +451,12 @@ export class MapEngine {
     } else {
       return;
     }
-    this.camera = { zoom: 1, panX: 0, panY: 0 };
     this.onScopeChanged?.(this.scope);
-    this.refit();
+    void this.animateFitTo(this.contentRect(), this.animationDuration, from);
   }
 
   drillTo(region: Region | undefined): void {
+    const from = this.view;
     if (!region) {
       this.scope = undefined;
       this.level = 'province';
@@ -379,9 +467,8 @@ export class MapEngine {
       this.scope = region;
       this.level = 'localLevel';
     }
-    this.camera = { zoom: 1, panX: 0, panY: 0 };
     this.onScopeChanged?.(this.scope);
-    this.refit();
+    void this.animateFitTo(this.contentRect(), this.animationDuration, from);
   }
 
   handlePointerDown(id: number, x: number, y: number): void {
@@ -424,6 +511,7 @@ export class MapEngine {
       if (
         Math.hypot(x - this.downX, y - this.downY) >= MapEngine.dragThreshold
       ) {
+        this.cancelAnimation();
         this.dragging = true;
       }
     }

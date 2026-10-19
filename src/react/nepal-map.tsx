@@ -65,6 +65,8 @@ export interface NepalMapProps {
   interactive?: boolean;
   minZoom?: number;
   maxZoom?: number;
+  /** Drill-down / zoomTo animation length in ms (default 400). */
+  animationDuration?: number;
   theme?: NepalMapTheme | 'light' | 'dark';
   padding?: number | { top: number; right: number; bottom: number; left: number };
   placeholder?: ReactNode;
@@ -116,6 +118,7 @@ export function NepalMap(props: NepalMapProps) {
     interactive = true,
     minZoom = 1,
     maxZoom = 40,
+    animationDuration = 400,
     theme: themeProp = 'light',
     padding = 8,
     placeholder,
@@ -216,6 +219,7 @@ export function NepalMap(props: NepalMapProps) {
       interactive,
       minZoom,
       maxZoom,
+      animationDuration,
       padding: pad,
       extraLayers,
       onRegionTap,
@@ -383,6 +387,7 @@ export function NepalMap(props: NepalMapProps) {
     engine.interactive = interactive;
     engine.minZoom = minZoom;
     engine.maxZoom = maxZoom;
+    engine.animationDuration = animationDuration;
     engine.padding = pad;
     engine.extraLayers = extraLayers;
     engine.onRegionTap = onRegionTap;
@@ -429,6 +434,7 @@ export function NepalMap(props: NepalMapProps) {
     interactive,
     minZoom,
     maxZoom,
+    animationDuration,
     pad,
     extraLayers,
     onRegionTap,
