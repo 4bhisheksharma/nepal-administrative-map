@@ -5,7 +5,7 @@ codes in `src/core/gazetteer/regions.generated.ts` are licensed under
 [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 
 The package's source code is licensed separately under the MIT License; see
-[LICENSE](LICENSE).
+[LICENSE](https://github.com/4bhisheksharma/nepal_administrative_map/blob/main/LICENSE).
 
 ## Source
 

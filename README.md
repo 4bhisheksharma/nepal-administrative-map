@@ -1,10 +1,13 @@
 # nepal-administrative-map
 
 [![npm](https://img.shields.io/npm/v/nepal-administrative-map.svg)](https://www.npmjs.com/package/nepal-administrative-map)
-[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/4bhisheksharma/nepal_administrative_map/blob/main/LICENSE)
+[![live demo](https://img.shields.io/badge/demo-live-brightgreen.svg)](https://4bhisheksharma.github.io/nepal_administrative_map/)
 
 An interactive administrative map of Nepal for **React**: **7 provinces,
 77 districts and 753 local levels**, in **English and Nepali (नेपाली)**.
+
+**[▶ Try the live demo](https://4bhisheksharma.github.io/nepal_administrative_map/)** in your browser, no install needed.
 
 Sister package to the Flutter
 [`nepal_administrative_map`](https://pub.dev/packages/nepal_administrative_map)
@@ -19,11 +22,11 @@ pub package — same data, codes, and feature set.
 
 | Provinces in Nepali | Dark mode |
 |---|---|
-| ![Provinces coloured by area, in Nepali](assets/screenshots/provinces_nepali.jpg) | ![Province map in dark mode](assets/screenshots/provinces_dark.jpg) |
+| ![Provinces coloured by area, in Nepali](https://raw.githubusercontent.com/4bhisheksharma/nepal_administrative_map/main/assets/screenshots/provinces_nepali.jpg) | ![Province map in dark mode](https://raw.githubusercontent.com/4bhisheksharma/nepal_administrative_map/main/assets/screenshots/provinces_dark.jpg) |
 | **Overlays and bilingual labels** | **All 77 districts** |
-| ![Protected areas, city markers and bilingual labels](assets/screenshots/overlays_bilingual.jpg) | ![Districts with English and Nepali labels](assets/screenshots/districts_bilingual.jpg) |
+| ![Protected areas, city markers and bilingual labels](https://raw.githubusercontent.com/4bhisheksharma/nepal_administrative_map/main/assets/screenshots/overlays_bilingual.jpg) | ![Districts with English and Nepali labels](https://raw.githubusercontent.com/4bhisheksharma/nepal_administrative_map/main/assets/screenshots/districts_bilingual.jpg) |
 | **Local levels by type** | |
-| ![Local levels coloured by type, with a tooltip](assets/screenshots/local_level_types.jpg) | |
+| ![Local levels coloured by type, with a tooltip](https://raw.githubusercontent.com/4bhisheksharma/nepal_administrative_map/main/assets/screenshots/local_level_types.jpg) | |
 
 ## Install
 
@@ -111,7 +114,8 @@ const controller = useNepalMapController();
 
 ## Attribution
 
-Map boundary data is **CC BY 4.0** (OKNP LocalBoundaries). See [DATA_LICENSE.md](DATA_LICENSE.md).
+Map boundary data is **CC BY 4.0** (OKNP LocalBoundaries). See
+[DATA_LICENSE.md](https://github.com/4bhisheksharma/nepal_administrative_map/blob/main/DATA_LICENSE.md).
 The map shows attribution by default; keep it visible or credit equivalently in your UI.
 
 ## Example
@@ -134,14 +138,14 @@ npm run pack:check # preview tarball contents
 ## Publishing
 
 ```sh
-cd nepal-administrative-map
 npm login
 npm run build
 npm publish
 ```
 
-Package name: [`nepal-administrative-map`](https://www.npmjs.com/package/nepal-administrative-map) (currently unpublished). Requires Node 18+.
+Package: [`nepal-administrative-map`](https://www.npmjs.com/package/nepal-administrative-map). Requires Node 18+.
 
 ## License
 
-MIT (code) · CC BY 4.0 (map data / names / codes)
+- **Code:** [MIT](https://github.com/4bhisheksharma/nepal_administrative_map/blob/main/LICENSE)
+- **Map data / names / codes:** [CC BY 4.0](https://github.com/4bhisheksharma/nepal_administrative_map/blob/main/DATA_LICENSE.md)

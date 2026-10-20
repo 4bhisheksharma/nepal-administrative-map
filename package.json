@@ -1,14 +1,13 @@
 {
   "name": "nepal-administrative-map",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Interactive, bilingual (English/Nepali) map of Nepal's 7 provinces, 77 districts and 753 local levels, with zoom, drill-down, choropleths and search.",
   "license": "MIT",
   "author": "Abhishek Sharma",
-  "homepage": "https://github.com/4bhisheksharma/nepal_administrative_map",
+  "homepage": "https://4bhisheksharma.github.io/nepal_administrative_map/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/4bhisheksharma/nepal_administrative_map.git",
-    "directory": "nepal-administrative-map"
+    "url": "git+https://github.com/4bhisheksharma/nepal_administrative_map.git"
   },
   "bugs": {
     "url": "https://github.com/4bhisheksharma/nepal_administrative_map/issues"

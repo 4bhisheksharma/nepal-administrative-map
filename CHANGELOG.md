@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.2
+
+- Align README screenshots, license, and data-license links with the GitHub repo (`assets/screenshots/`, `LICENSE`, `DATA_LICENSE.md`)
+- Add live demo link: https://4bhisheksharma.github.io/nepal_administrative_map/
+- Point `homepage` at the live demo; drop incorrect repository `directory`
+
 ## 0.0.1
 
 Initial npm release (React sister of Flutter `nepal_administrative_map`):
