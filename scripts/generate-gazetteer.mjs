@@ -3,7 +3,7 @@
  * Generates src/core/gazetteer/regions.generated.ts from the Flutter package's
  * names.csv. Identifiers match the Dart enum names (camelCase).
  */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,6 +17,15 @@ const csvPath = join(
   'names.csv',
 );
 const outPath = join(root, 'src', 'core', 'gazetteer', 'regions.generated.ts');
+
+if (!existsSync(csvPath)) {
+  if (existsSync(outPath)) {
+    console.log(`names.csv missing; keeping existing ${outPath}`);
+    process.exit(0);
+  }
+  console.error(`Missing ${csvPath} and no generated gazetteer at ${outPath}`);
+  process.exit(1);
+}
 
 const reserved = new Set([
   'abstract', 'as', 'assert', 'async', 'await', 'base', 'break', 'case',

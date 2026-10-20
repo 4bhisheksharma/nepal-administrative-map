@@ -1,0 +1,12 @@
+# Prefer package.json "files"; this is a safety net.
+*.map
+*.tgz
+src
+example
+scripts
+tsconfig.json
+tsup.config.ts
+dist-types
+node_modules
+.DS_Store
+*.log

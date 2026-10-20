@@ -7,7 +7,8 @@
   "homepage": "https://github.com/4bhisheksharma/nepal_administrative_map",
   "repository": {
     "type": "git",
-    "url": "https://github.com/4bhisheksharma/nepal_administrative_map.git"
+    "url": "git+https://github.com/4bhisheksharma/nepal_administrative_map.git",
+    "directory": "nepal-administrative-map"
   },
   "bugs": {
     "url": "https://github.com/4bhisheksharma/nepal_administrative_map/issues"
@@ -20,29 +21,46 @@
     "visualization",
     "react",
     "choropleth",
-    "topojson"
+    "topojson",
+    "canvas"
   ],
   "type": "module",
   "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./core": {
-      "types": "./dist/core.d.ts",
-      "import": "./dist/core.js",
-      "require": "./dist/core.cjs"
+      "import": {
+        "types": "./dist/core.d.ts",
+        "default": "./dist/core.js"
+      },
+      "require": {
+        "types": "./dist/core.d.cts",
+        "default": "./dist/core.cjs"
+      }
     },
     "./assets/maps/nepal.topo.json": "./assets/maps/nepal.topo.json",
     "./package.json": "./package.json"
   },
   "files": [
-    "dist",
+    "dist/**/*.js",
+    "dist/**/*.cjs",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.cts",
     "assets/maps/nepal.topo.json",
     "assets/screenshots",
     "LICENSE",
@@ -56,20 +74,16 @@
     "prebuild": "npm run sync-assets && npm run generate",
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build",
-    "dev:example": "npm run build && npm --prefix example run dev"
+    "pack:check": "npm pack --dry-run",
+    "prepublishOnly": "npm run typecheck && npm run build",
+    "dev:example": "npm --prefix example run dev"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
-  },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": false
-    },
-    "react-dom": {
-      "optional": false
-    }
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

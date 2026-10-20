@@ -126,9 +126,21 @@ npm run dev
 
 ```sh
 npm install
-npm run generate   # gazetteer from Flutter names.csv
+npm run generate   # gazetteer from Flutter names.csv (optional if already generated)
 npm run build      # dist/ for npm publish
+npm run pack:check # preview tarball contents
 ```
+
+## Publishing
+
+```sh
+cd nepal-administrative-map
+npm login
+npm run build
+npm publish
+```
+
+Package name: [`nepal-administrative-map`](https://www.npmjs.com/package/nepal-administrative-map) (currently unpublished). Requires Node 18+.
 
 ## License
 

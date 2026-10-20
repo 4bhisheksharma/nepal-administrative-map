@@ -15,11 +15,16 @@ const src = join(
 const destDir = join(root, 'assets', 'maps');
 const dest = join(destDir, 'nepal.topo.json');
 
-if (!existsSync(src)) {
-  console.error(`Missing Flutter map asset: ${src}`);
+mkdirSync(destDir, { recursive: true });
+
+if (existsSync(src)) {
+  copyFileSync(src, dest);
+  console.log(`Synced ${dest}`);
+} else if (existsSync(dest)) {
+  console.log(`Flutter asset missing; keeping existing ${dest}`);
+} else {
+  console.error(
+    `Missing map asset. Expected either:\n  ${src}\n  or ${dest}`,
+  );
   process.exit(1);
 }
-
-mkdirSync(destDir, { recursive: true });
-copyFileSync(src, dest);
-console.log(`Synced ${dest}`);
