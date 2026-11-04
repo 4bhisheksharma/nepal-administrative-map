@@ -46,7 +46,9 @@ class CallbackMapDataSource extends MapDataSource {
  * `nepal-administrative-map/assets/maps/nepal.topo.json`.
  */
 export class AssetMapDataSource extends MapDataSource {
-  readonly cacheKey = 'nepal-administrative-map:assets/maps/nepal.topo.json';
+  get cacheKey(): string {
+    return `nepal-administrative-map:asset:${this.url ?? ''}`;
+  }
 
   constructor(private readonly url?: string) {
     super();
