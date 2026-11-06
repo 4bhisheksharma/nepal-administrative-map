@@ -85,15 +85,13 @@ export interface NepalMapProps {
   styleProp?: CSSProperties;
 }
 
-let preloadPromise: Promise<NepalMapData> | null = null;
-
 /** Start decoding map data before the first render. */
 export function preloadNepalMap(
   source: MapDataSource | string,
 ): Promise<NepalMapData> {
   const resolved =
     typeof source === 'string' ? new AssetMapDataSource(source) : source;
-  return (preloadPromise ??= NepalMapData.load(resolved));
+  return NepalMapData.load(resolved);
 }
 
 export function NepalMap(props: NepalMapProps) {
